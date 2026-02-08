@@ -15,6 +15,9 @@ import ManagePatients from "./pages/admin/ManagePatients";
 // Doctor
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import Availability from "./pages/doctor/Availability";
+// --- ADDED THESE IMPORTS ---
+import TodayAppointments from "./pages/doctor/TodayAppointments";
+import WritePrescription from "./pages/doctor/WritePrescription";
 
 // Patient
 import PatientDashboard from "./pages/patient/PatientDashboard";
@@ -89,6 +92,29 @@ function App() {
               <ProtectedRoute role="DOCTOR">
                 <Layout>
                   <Availability />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* --- ADDED DOCTOR ROUTES --- */}
+          <Route
+            path="/doctor/today"
+            element={
+              <ProtectedRoute role="DOCTOR">
+                <Layout>
+                  <TodayAppointments />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/doctor/write-prescription"
+            element={
+              <ProtectedRoute role="DOCTOR">
+                <Layout>
+                  <WritePrescription />
                 </Layout>
               </ProtectedRoute>
             }

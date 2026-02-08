@@ -40,3 +40,37 @@
 .read-the-docs {
   color: #888;
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  /* This creates a consistent card style used across all our components */
+  .card {
+    @apply bg-white border border-slate-100 rounded-[2rem] p-6 transition-all duration-300;
+  }
+  
+  /* Input styling to keep forms consistent */
+  .input-field {
+    @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm 
+           focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all;
+  }
+}
+
+/* Smooth transitions for route changes */
+.animate-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

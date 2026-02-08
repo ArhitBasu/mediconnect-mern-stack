@@ -71,10 +71,57 @@ button:focus-visible {
 @tailwind components;
 @tailwind utilities;
 
-.card {
-  @apply bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition duration-300;
+:root {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #f8fafc; /* Light slate background */
+  color: #0f172a;
 }
 
-.sidebar-link {
-  @apply block py-2 px-3 rounded hover:bg-blue-700 transition;
+/* Remove the centering from body to allow Sidebar/Layout to work */
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  display: block; /* Changed from flex to block */
+}
+
+#root {
+  height: 100%;
+}
+
+@layer components {
+  /* Modern Dashboard Card */
+  .card {
+    @apply bg-white border border-slate-200 rounded-2xl p-6 
+           shadow-[0_1px_3px_rgba(0,0,0,0.1)] 
+           hover:shadow-[0_10px_20px_rgba(0,0,0,0.05)] 
+           transition-all duration-300;
+  }
+
+  /* Updated Sidebar Link to match our new UI */
+  .sidebar-link {
+    @apply flex items-center gap-3 py-3 px-4 rounded-xl 
+           text-slate-500 font-medium transition-all duration-200 
+           hover:bg-indigo-50 hover:text-indigo-600;
+  }
+
+  /* Active state for Sidebar Link */
+  .sidebar-link-active {
+    @apply bg-indigo-600 text-white shadow-lg shadow-indigo-100 hover:bg-indigo-700 hover:text-white;
+  }
+}
+
+/* Custom Scrollbar for that "Desktop" feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
 }
