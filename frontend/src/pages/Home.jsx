@@ -597,7 +597,7 @@ const Home = () => {
           </div>
 
           <div className="border-t border-slate-800 pt-10 mt-8 text-center text-slate-400 text-sm">
-            <p>© 2024 HealthCore. All rights reserved. HIPAA Compliant. Made with ❤️ for better healthcare.</p>
+            <p>© 2026 HealthCore. All rights reserved. HIPAA Compliant. Made with ❤️ for better healthcare.</p>
                         
           </div>
         </div>
