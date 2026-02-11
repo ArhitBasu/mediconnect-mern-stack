@@ -1,7 +1,20 @@
-import { useState } from "react";
-import { Calendar, Clock, Stethoscope, FileText, Send, AlertCircle } from "lucide-react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { 
+  Calendar, 
+  Clock, 
+  Stethoscope, 
+  FileText, 
+  Send, 
+  Sparkles, 
+  ShieldCheck, 
+  Info 
+} from "lucide-react";
 
 const BookAppointment = () => {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     doctor: "",
     date: "",
@@ -15,45 +28,70 @@ const BookAppointment = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Appointment Request Sent!");
+    
+    const newAppointment = {
+      id: Date.now(),
+      patientId: user?.id || user?.email,
+      doctor: form.doctor.split(' (')[0],
+      specialty: form.doctor.split('(')[1]?.replace(')', '') || "General",
+      date: form.date,
+      time: form.time,
+      reason: form.reason,
+      status: "Pending",
+      createdAt: new Date().toISOString()
+    };
+
+    const existingApts = JSON.parse(localStorage.getItem("appointments") || "[]");
+    localStorage.setItem("appointments", JSON.stringify([...existingApts, newAppointment]));
+    
+    navigate("/patient/my-appointments");
   };
 
   return (
-    <div className="max-w-4xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Request an Appointment</h1>
-        <p className="text-slate-500 font-medium mt-1">Select a specialist and your preferred time slot.</p>
+    <div className="max-w-6xl mx-auto pb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+      {/* Header Section */}
+      <div className="mb-10 space-y-2">
+        <div className="flex items-center gap-2 text-indigo-600 font-bold text-xs uppercase tracking-[0.3em]">
+          <Sparkles size={16} />
+          Scheduling Service
+        </div>
+        <h1 className="text-4xl font-black text-slate-900 tracking-tight">Request Consultation</h1>
+        <p className="text-slate-500 font-medium">Please fill in the details below to secure your time slot.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
         
-        {/* Left: The Form */}
-        <form onSubmit={handleSubmit} className="lg:col-span-2 space-y-6">
-          <div className="card space-y-6 shadow-xl shadow-slate-200/50 border-none">
+        {/* Left: Enhanced Form Section */}
+        <form onSubmit={handleSubmit} className="lg:col-span-3 space-y-8">
+          <div className="bg-white p-8 md:p-10 rounded-[2.5rem] border border-slate-100 shadow-2xl shadow-slate-200/60 space-y-8">
             
-            {/* Doctor Selection */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-500 uppercase ml-1 flex items-center gap-2">
-                <Stethoscope size={14} className="text-indigo-500" /> Choose a Specialist
+            {/* Specialist Selection */}
+            <div className="space-y-3">
+              <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                <Stethoscope size={14} className="text-indigo-500" /> Professional Specialist
               </label>
-              <select
-                name="doctor"
-                onChange={handleChange}
-                required
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
-              >
-                <option value="">Select a Doctor</option>
-                <option value="Dr. John Smith">Dr. John Smith (Cardiology)</option>
-                <option value="Dr. Sarah Jenkins">Dr. Sarah Jenkins (Neurology)</option>
-                <option value="Dr. Michael Chen">Dr. Michael Chen (Pediatrics)</option>
-              </select>
+              <div className="relative group">
+                <select
+                  name="doctor"
+                  onChange={handleChange}
+                  required
+                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer group-hover:bg-white"
+                >
+                  <option value="">Select a Doctor</option>
+                  <option value="Dr. John Smith (Cardiology)">Dr. John Smith — Cardiology</option>
+                  <option value="Dr. Sarah Jenkins (Neurology)">Dr. Sarah Jenkins — Neurology</option>
+                  <option value="Dr. Michael Chen (Pediatrics)">Dr. Michael Chen — Pediatrics</option>
+                </select>
+                <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                  <svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+                </div>
+              </div>
             </div>
 
             {/* Date & Time Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase ml-1 flex items-center gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
                   <Calendar size={14} className="text-indigo-500" /> Preferred Date
                 </label>
                 <input
@@ -61,69 +99,84 @@ const BookAppointment = () => {
                   name="date"
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all group-hover:bg-white"
                 />
               </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 uppercase ml-1 flex items-center gap-2">
-                  <Clock size={14} className="text-indigo-500" /> Preferred Time
+              <div className="space-y-3">
+                <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                  <Clock size={14} className="text-indigo-500" /> Arrival Time
                 </label>
                 <input
                   type="time"
                   name="time"
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
+                  className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all"
                 />
               </div>
             </div>
 
             {/* Reason Textarea */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-500 uppercase ml-1 flex items-center gap-2">
-                <FileText size={14} className="text-indigo-500" /> Reason for Visit
+            <div className="space-y-3">
+              <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                <FileText size={14} className="text-indigo-500" /> Consultation Notes
               </label>
               <textarea
                 name="reason"
                 rows="4"
-                placeholder="Briefly describe your symptoms or concern..."
+                placeholder="Briefly describe your symptoms or medical concern..."
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all resize-none"
+                className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-3xl text-sm font-medium text-slate-700 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all resize-none"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-100 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+              className="w-full bg-slate-900 hover:bg-indigo-600 text-white font-black py-5 rounded-[1.5rem] shadow-xl shadow-indigo-100 transition-all active:scale-[0.98] flex items-center justify-center gap-3 text-sm tracking-widest uppercase"
             >
               <Send size={18} />
-              Confirm Booking Request
+              Finalize Request
             </button>
           </div>
         </form>
 
-        {/* Right: Informational Sidebar */}
-        <div className="space-y-6">
-          <div className="card bg-slate-900 border-none text-white p-6 shadow-2xl shadow-slate-300">
-            <h3 className="font-bold text-lg mb-4">Booking Policy</h3>
-            <ul className="space-y-4">
-              <li className="flex gap-3 text-xs text-slate-300 leading-relaxed">
-                <div className="h-5 w-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 text-white">1</div>
-                Requests are typically confirmed by the clinic within 2 hours.
-              </li>
-              <li className="flex gap-3 text-xs text-slate-300 leading-relaxed">
-                <div className="h-5 w-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0 text-white">2</div>
-                Cancellations must be made at least 24 hours in advance.
-              </li>
-            </ul>
+        {/* Right: Summary & Security Sidebar */}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-indigo-50 rounded-[2.5rem] p-8 border border-indigo-100">
+            <h3 className="text-lg font-black text-indigo-900 mb-6 flex items-center gap-2">
+              <Info size={20} /> Appointment Summary
+            </h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center py-3 border-b border-indigo-200/50">
+                <span className="text-xs font-bold text-indigo-400 uppercase">Provider</span>
+                <span className="text-sm font-black text-indigo-900">{form.doctor || "Not Selected"}</span>
+              </div>
+              <div className="flex justify-between items-center py-3 border-b border-indigo-200/50">
+                <span className="text-xs font-bold text-indigo-400 uppercase">Date</span>
+                <span className="text-sm font-black text-indigo-900">{form.date || "TBD"}</span>
+              </div>
+              <div className="flex justify-between items-center py-3">
+                <span className="text-xs font-bold text-indigo-400 uppercase">Service Fee</span>
+                <span className="text-sm font-black text-indigo-900">$0.00 (Insurance)</span>
+              </div>
+            </div>
+            
+            <div className="mt-8 p-4 bg-white/50 rounded-2xl border border-white flex items-center gap-3">
+              <ShieldCheck className="text-indigo-600" size={24} />
+              <p className="text-[10px] font-bold text-indigo-800 leading-tight tracking-tight uppercase">
+                Your medical data is encrypted and secure under standard HIPAA guidelines.
+              </p>
+            </div>
           </div>
 
-          <div className="card border-dashed border-2 border-slate-200 bg-white/50 flex flex-col items-center text-center p-6">
-            <AlertCircle className="text-indigo-500 mb-3" size={32} />
-            <h4 className="text-sm font-bold text-slate-800">Need Immediate Help?</h4>
-            <p className="text-xs text-slate-500 mt-2">
-              If this is a life-threatening emergency, please call your local emergency number immediately.
+          <div className="p-8 rounded-[2.5rem] border-2 border-dashed border-slate-200 bg-white">
+            <h4 className="text-sm font-black text-slate-800 mb-2">Need Help?</h4>
+            <p className="text-xs text-slate-500 leading-relaxed mb-4">
+              Our support team is available 24/7 for technical difficulties or urgent rescheduling.
             </p>
+            <button className="text-[11px] font-black text-indigo-600 hover:text-indigo-800 underline uppercase tracking-widest">
+              Contact Support
+            </button>
           </div>
         </div>
 

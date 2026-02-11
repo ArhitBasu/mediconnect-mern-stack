@@ -1,104 +1,94 @@
-import { Plus, Search, MoreVertical, Edit2, Trash2, Mail, Phone } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Search, Trash2, CheckCircle, ShieldAlert, AlertTriangle, UserPlus } from "lucide-react";
 
 const ManageDoctors = () => {
-  // Mock data for demonstration
-  const doctors = [
-    { id: 1, name: "Dr. John Smith", spec: "Cardiologist", status: "Active", email: "john.s@mediconnect.com" },
-    { id: 2, name: "Dr. Sarah Jenkins", spec: "Neurologist", status: "On Leave", email: "sarah.j@mediconnect.com" },
-    { id: 3, name: "Dr. Michael Chen", spec: "Pediatrician", status: "Active", email: "m.chen@mediconnect.com" },
-  ];
+  const [doctors, setDoctors] = useState([]);
+
+  const loadDoctors = () => {
+    const allUsers = JSON.parse(localStorage.getItem("users") || "[]");
+    setDoctors(allUsers.filter((u) => u.role === "DOCTOR"));
+  };
+
+  useEffect(() => { loadDoctors(); }, []);
+
+  const updateStatus = (id, status) => {
+    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    const updated = users.map(u => u.id === id ? { ...u, status } : u);
+    localStorage.setItem("users", JSON.stringify(updated));
+    loadDoctors();
+  };
 
   return (
-    <div className="space-y-6">
-      {/* Header with Search and Add Action */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-8 p-2">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Manage Doctors</h1>
-          <p className="text-slate-500 text-sm">View, edit, and manage all registered medical professionals.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Staff Management</h1>
+          <p className="text-slate-500 font-medium">Verify and authorize medical professionals.</p>
         </div>
-        
-        <div className="flex gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-            <input 
-              type="text" 
-              placeholder="Search doctors..." 
-              className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all w-64"
-            />
-          </div>
-          <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-100">
-            <Plus size={18} />
-            Add Doctor
-          </button>
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+          <input type="text" placeholder="Search by name or specialty..." className="pl-12 pr-6 py-3 bg-white border border-slate-200 rounded-2xl text-sm w-full md:w-80 focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none focus:border-indigo-500 shadow-sm" />
         </div>
       </div>
 
-      {/* Table Card */}
-      <div className="card !p-0 overflow-hidden"> {/* !p-0 removes default card padding for the table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100">
-                <th className="px-6 py-4 text-xs uppercase tracking-wider font-bold text-slate-500">Doctor Info</th>
-                <th className="px-6 py-4 text-xs uppercase tracking-wider font-bold text-slate-500">Specialization</th>
-                <th className="px-6 py-4 text-xs uppercase tracking-wider font-bold text-slate-500">Status</th>
-                <th className="px-6 py-4 text-xs uppercase tracking-wider font-bold text-slate-500 text-right">Actions</th>
+      <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-slate-50/50">
+              <th className="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Medical Practitioner</th>
+              <th className="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Verification Status</th>
+              <th className="px-8 py-5 text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Administrative Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-50">
+            {doctors.map((doc) => (
+              <tr key={doc.id} className="hover:bg-slate-50/50 transition-colors group">
+                <td className="px-8 py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg border border-indigo-100">
+                      {doc.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Dr. {doc.name}</p>
+                      <p className="text-xs text-slate-400 font-medium">{doc.email}</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-8 py-6">
+                  {doc.status === "APPROVED" ? (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-wider border border-emerald-100">
+                      <CheckCircle size={12} /> Verified
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-[10px] font-black uppercase tracking-wider border border-amber-100">
+                      <AlertTriangle size={12} /> Pending Review
+                    </span>
+                  )}
+                </td>
+                <td className="px-8 py-6 text-right">
+                  <div className="flex justify-end gap-2">
+                    {doc.status !== "APPROVED" && (
+                      <button onClick={() => updateStatus(doc.id, "APPROVED")} className="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-all">
+                        Approve
+                      </button>
+                    )}
+                    <button onClick={() => updateStatus(doc.id, "REJECTED")} className="p-2 bg-white border border-slate-200 text-slate-400 rounded-xl hover:text-red-600 hover:border-red-100 hover:bg-red-50 transition-all">
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {doctors.map((doc) => (
-                <tr key={doc.id} className="hover:bg-slate-50/80 transition-colors group">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
-                        {doc.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      <div>
-                        <p className="text-sm font-bold text-slate-800">{doc.name}</p>
-                        <p className="text-xs text-slate-500">{doc.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-sm font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-lg">
-                      {doc.spec}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                      doc.status === 'Active' 
-                        ? 'bg-emerald-50 text-emerald-700' 
-                        : 'bg-amber-50 text-amber-700'
-                    }`}>
-                      <span className={`h-1.5 w-1.5 rounded-full ${doc.status === 'Active' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                      {doc.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="p-2 hover:bg-white rounded-lg border border-transparent hover:border-slate-200 text-slate-400 hover:text-indigo-600 transition-all">
-                        <Edit2 size={16} />
-                      </button>
-                      <button className="p-2 hover:bg-white rounded-lg border border-transparent hover:border-slate-200 text-slate-400 hover:text-red-600 transition-all">
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        
-        {/* Pagination Footer */}
-        <div className="px-6 py-4 border-t border-slate-100 bg-slate-50/30 flex items-center justify-between">
-          <p className="text-xs text-slate-500 font-medium">Showing 3 of 128 doctors</p>
-          <div className="flex gap-2">
-            <button className="px-3 py-1 text-xs font-bold border border-slate-200 rounded-md hover:bg-white transition-colors">Previous</button>
-            <button className="px-3 py-1 text-xs font-bold bg-white border border-slate-200 rounded-md shadow-sm">1</button>
-            <button className="px-3 py-1 text-xs font-bold border border-slate-200 rounded-md hover:bg-white transition-colors">Next</button>
+            ))}
+          </tbody>
+        </table>
+        {doctors.length === 0 && (
+          <div className="py-20 text-center">
+            <div className="inline-flex p-6 bg-slate-50 rounded-[2.5rem] mb-4">
+              <ShieldAlert size={40} className="text-slate-200" />
+            </div>
+            <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No Practitioner Records Found</p>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

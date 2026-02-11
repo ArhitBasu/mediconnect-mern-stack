@@ -67,19 +67,25 @@ const Sidebar = () => {
         )}
 
         {/* DOCTOR LINKS */}
-        {user?.role === "DOCTOR" && (
-          <>
-            <NavLink to="/doctor" end className={navItemClasses}>
-              <LayoutDashboard size={20} />
-              <span className="font-medium">Doctor Dashboard</span>
-            </NavLink>
-            <NavLink to="/doctor/availability" className={navItemClasses}>
-              <Clock size={20} />
-              <span className="font-medium">Set Availability</span>
-            </NavLink>
-          </>
-        )}
+{user?.role === "DOCTOR" && (
+  <>
+    <NavLink to="/doctor" end className={navItemClasses}>
+      <LayoutDashboard size={20} />
+      <span className="font-medium">Doctor Dashboard</span>
+    </NavLink>
+    
+    {/* ADDED: Link to Today's Appointments */}
+    <NavLink to="/doctor/today" className={navItemClasses}>
+      <CalendarCheck size={20} />
+      <span className="font-medium">Live Schedule</span>
+    </NavLink>
 
+    <NavLink to="/doctor/availability" className={navItemClasses}>
+      <Clock size={20} />
+      <span className="font-medium">Set Availability</span>
+    </NavLink>
+  </>
+)}
         {/* ADMIN LINKS */}
         {user?.role === "ADMIN" && (
           <>

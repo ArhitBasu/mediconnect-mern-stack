@@ -1,112 +1,89 @@
-import { Calendar, Users, Clock, CheckCircle2, XCircle, ArrowRight, UserPlus, Activity } from "lucide-react";
+import { Calendar, Clock, CheckCircle2, XCircle, ArrowRight, UserPlus, Activity, TrendingUp } from "lucide-react";
 
 const DoctorDashboard = () => {
   const stats = [
-    { label: "Today's Visits", value: "12", icon: Clock, color: "text-blue-600", bg: "bg-blue-50" },
+    { label: "Consultations", value: "12", icon: Clock, color: "text-blue-600", bg: "bg-blue-50" },
     { label: "New Patients", value: "4", icon: UserPlus, color: "text-indigo-600", bg: "bg-indigo-50" },
-    { label: "Pending Requests", value: "8", icon: Activity, color: "text-amber-600", bg: "bg-amber-50" },
-  ];
-
-  const pendingRequests = [
-    { id: 1, name: "Sarah Miller", type: "First Visit", time: "Requested for 2:00 PM" },
-    { id: 2, name: "James Wilson", type: "Follow-up", time: "Requested for 4:30 PM" },
+    { label: "Urgent Tasks", value: "8", icon: Activity, color: "text-rose-600", bg: "bg-rose-50" },
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="p-2 space-y-10 animate-in fade-in duration-1000">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Doctor Workspace</h1>
-          <p className="text-slate-500 font-medium">You have 12 appointments scheduled for today.</p>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tighter italic">Doctor's Lounge</h1>
+          <p className="text-slate-500 font-medium">System operational. You have <span className="text-indigo-600 font-bold">12 sessions</span> today.</p>
         </div>
-        <div className="flex items-center gap-2 bg-indigo-50 px-4 py-2 rounded-2xl border border-indigo-100">
-          <Calendar size={18} className="text-indigo-600" />
-          <span className="text-sm font-bold text-indigo-700">Monday, Feb 9, 2026</span>
+        <div className="flex items-center gap-3 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
+          <div className="p-2 bg-indigo-600 text-white rounded-lg"><Calendar size={18} /></div>
+          <span className="text-sm font-black text-slate-700 pr-4">{new Date().toDateString()}</span>
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {stats.map((stat, i) => (
-          <div key={i} className="card flex items-center gap-5 group hover:scale-[1.02] transition-transform cursor-default">
-            <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color}`}>
-              <stat.icon size={28} />
+          <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-50 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group">
+            <div className="flex justify-between items-start mb-6">
+              <div className={`p-4 rounded-2xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform`}>
+                <stat.icon size={30} />
+              </div>
+              <TrendingUp size={18} className="text-slate-200" />
             </div>
-            <div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
-              <h3 className="text-2xl font-black text-slate-800">{stat.value}</h3>
-            </div>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{stat.label}</p>
+            <h3 className="text-4xl font-black text-slate-900 mt-1">{stat.value}</h3>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Appointment Requests */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        {/* Left: Interactive Requests */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <Activity size={20} className="text-indigo-500" />
-              Appointment Requests
-            </h3>
-            <button className="text-sm font-bold text-indigo-600 hover:underline">View All</button>
-          </div>
-
-          <div className="space-y-4">
-            {pendingRequests.map((request) => (
-              <div key={request.id} className="card flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-l-4 border-l-amber-400">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 shadow-inner">
-                    {request.name.charAt(0)}
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-800">{request.name}</h4>
-                    <p className="text-xs text-slate-500 font-medium">{request.type} • {request.time}</p>
-                  </div>
+          <h3 className="text-lg font-black text-slate-800 px-2 uppercase tracking-tight flex items-center gap-3">
+             <span className="w-2 h-6 bg-indigo-600 rounded-full"></span> Incoming Requests
+          </h3>
+          {[1, 2].map((id) => (
+            <div key={id} className="bg-white p-6 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6 group hover:border-indigo-100 transition-all">
+              <div className="flex items-center gap-5">
+                <div className="h-16 w-16 rounded-[1.5rem] bg-slate-50 flex items-center justify-center font-black text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-inner">
+                  P{id}
                 </div>
-                <div className="flex items-center gap-2">
-                  <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-bold hover:bg-emerald-600 hover:text-white transition-all">
-                    <CheckCircle2 size={16} /> Accept
-                  </button>
-                  <button className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-sm font-bold hover:bg-red-600 hover:text-white transition-all">
-                    <XCircle size={16} /> Decline
-                  </button>
+                <div>
+                  <h4 className="font-black text-slate-800 text-lg">Patient #08{id}2</h4>
+                  <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">General Consultation • 10:00 AM</p>
                 </div>
               </div>
-            ))}
-          </div>
+              <div className="flex gap-3">
+                <button className="px-6 py-3 bg-emerald-50 text-emerald-600 rounded-2xl text-xs font-black uppercase hover:bg-emerald-600 hover:text-white transition-all">Accept</button>
+                <button className="px-6 py-3 bg-slate-50 text-slate-400 rounded-2xl text-xs font-black uppercase hover:bg-rose-50 hover:text-rose-600 transition-all">Decline</button>
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Right Column: Mini Schedule */}
-        <div className="space-y-6">
-          <h3 className="text-lg font-bold text-slate-800">Schedule Preview</h3>
-          <div className="card space-y-6 relative overflow-hidden">
-             {/* Timeline Visual Line */}
-             <div className="absolute left-9 top-14 bottom-10 w-0.5 bg-slate-100"></div>
-             
-             {[ 
-               { time: "09:00", patient: "Alice Cooper", done: true },
-               { time: "10:30", patient: "Bob Marley", done: false },
-               { time: "11:15", patient: "Charlie Puth", done: false }
-             ].map((item, idx) => (
-               <div key={idx} className="flex gap-4 items-start relative z-10">
-                 <span className={`text-[10px] font-black w-8 pt-1 ${item.done ? 'text-slate-300' : 'text-slate-500'}`}>
-                   {item.time}
-                 </span>
-                 <div className={`h-6 w-6 rounded-full border-4 border-white shadow-sm flex-shrink-0 mt-0.5 ${item.done ? 'bg-emerald-500' : 'bg-indigo-500'}`}></div>
-                 <div className="flex-1">
-                   <p className={`text-sm font-bold ${item.done ? 'text-slate-400 line-through' : 'text-slate-700'}`}>
-                     {item.patient}
-                   </p>
-                   {!item.done && <p className="text-[10px] text-indigo-500 font-bold uppercase">Next Patient</p>}
-                 </div>
-               </div>
-             ))}
-
-             <button className="w-full py-3 bg-slate-50 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors flex items-center justify-center gap-2">
-               See Full Schedule <ArrowRight size={14} />
-             </button>
-          </div>
+        {/* Right: Modern Timeline */}
+        <div className="bg-slate-900 rounded-[3rem] p-10 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full"></div>
+            <h3 className="text-xl font-black mb-10 flex items-center justify-between">
+                Schedule
+                <span className="text-[10px] bg-white/10 px-3 py-1 rounded-full text-indigo-300">FEB 2026</span>
+            </h3>
+            <div className="space-y-8 relative">
+                <div className="absolute left-1 top-2 bottom-2 w-px bg-white/10"></div>
+                {[
+                    { time: "09:00", p: "Sarah M.", status: "Done" },
+                    { time: "11:30", p: "James W.", status: "Next" },
+                    { time: "14:00", p: "Emily R.", status: "Wait" }
+                ].map((item, i) => (
+                    <div key={i} className="flex gap-6 items-center relative group">
+                        <div className={`w-2.5 h-2.5 rounded-full border-2 border-slate-900 z-10 ${item.status === 'Next' ? 'bg-indigo-400 animate-pulse scale-125' : 'bg-white/20'}`}></div>
+                        <div className="flex-1">
+                            <p className="text-[10px] font-black text-indigo-300 tracking-[0.2em] uppercase">{item.time}</p>
+                            <p className={`font-bold ${item.status === 'Done' ? 'text-white/40 line-through' : 'text-white'}`}>{item.p}</p>
+                        </div>
+                        {item.status === 'Next' && <ArrowRight size={16} className="text-indigo-400 group-hover:translate-x-2 transition-transform" />}
+                    </div>
+                ))}
+            </div>
         </div>
       </div>
     </div>

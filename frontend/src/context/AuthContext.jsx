@@ -5,24 +5,19 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  // Restore user on refresh
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
+    const storedUser = JSON.parse(localStorage.getItem("currentUser"));
     if (storedUser) setUser(storedUser);
   }, []);
 
-  const login = (role) => {
-    const fakeUser = { role };
-    localStorage.setItem("user", JSON.stringify(fakeUser));
-    setUser(fakeUser);
-  };
-
   const logout = () => {
-    localStorage.removeItem("user");
+    localStorage.removeItem("currentUser");
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, logout }}>
       {children}
     </AuthContext.Provider>
   );
